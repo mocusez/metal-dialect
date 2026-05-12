@@ -1,0 +1,24 @@
+[workspace]
+authors = ["metal-dialect contributors"]
+channels = ["conda-forge"]
+name = "metal-dialect"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[dependencies]
+cmake = ">=4.3.2,<5"
+ninja = ">=1.13.2,<2"
+lit = "22.1.*"
+mlir = "22.1.*"
+llvmdev = "22.1.*"
+llvm-tools = "22.1.*"
+
+[tasks]
+configure = "cmake -S . -B build/debug -G Ninja -DCMAKE_BUILD_TYPE=Debug -DMLIR_DIR=$CONDA_PREFIX/lib/cmake/mlir -DLLVM_DIR=$CONDA_PREFIX/lib/cmake/llvm -DLLVM_EXTERNAL_LIT=$CONDA_PREFIX/bin/llvm-lit -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+build = { cmd = "cmake --build build/debug", depends-on = ["configure"] }
+check-metal = { cmd = "cmake --build build/debug --target check-metal", depends-on = ["build"] }
+runtime-build = "swift build --package-path MetalRuntime -c release"
+examples-build = { cmd = "./scripts/build-examples.sh", depends-on = ["build", "runtime-build"] }
+examples-run = { cmd = "./scripts/run-examples.sh", depends-on = ["examples-build"] }
+validate = { depends-on = ["check-metal", "examples-run"] }
+all = { depends-on = ["validate"] }

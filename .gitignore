@@ -1,0 +1,11 @@
+CMakeUserPresets.json
+build
+.cache
+examples/MetalRuntimeExample/MetalRuntimeExample.xcodeproj/project.xcworkspace/xcuserdata
+examples/MetalRuntimeExample/MetalRuntimeExample.xcodeproj/xcuserdata
+.idea
+
+.pixi/
+
+.omc
+.omx
